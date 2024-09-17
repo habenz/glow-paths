@@ -5,6 +5,11 @@ export default class Grid {
       [...Array(size)].map((_) => new GridSquare())
     );
   }
+
+  rotateSquare(r, c) {
+    const currRotation = this.squares[r][c].rotation;
+    this.squares[r][c].rotation = currRotation + Math.PI / 2;
+  }
 }
 
 class GridSquare {

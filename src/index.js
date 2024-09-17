@@ -9,10 +9,12 @@ new p5(sketch, canvasWrapper);
 
 function sketch(p) {
   let boardSize;
+  let tileSize;
   let grid = new Grid(10);
 
   function updateSketchSize() {
     boardSize = Math.min(p.windowWidth, p.windowHeight) * 0.95;
+    tileSize = boardSize / 10;
   }
 
   p.setup = () => {
@@ -24,6 +26,13 @@ function sketch(p) {
   p.windowResized = () => {
     updateSketchSize();
     p.resizeCanvas(boardSize, boardSize);
+    drawGrid();
+  };
+
+  p.mouseClicked = () => {
+    const c = p.floor(p.mouseX / tileSize);
+    const r = p.floor(p.mouseY / tileSize);
+    grid.rotateSquare(r, c);
     drawGrid();
   };
 

@@ -57,10 +57,38 @@ function sketch(p) {
 
   function drawConnection(topLeftX, topLeftY, type, isConnected) {
     const tileSize = boardSize / 10;
-
+    if (!isConnected) {
+      return;
+    }
     if (type == "NE") {
       p.arc(topLeftX, topLeftY, tileSize, tileSize, 0, p.HALF_PI);
+    } else if (type == "NW") {
+      p.arc(topLeftX + tileSize, topLeftY, tileSize, tileSize, p.HALF_PI, p.PI);
+    } else if (type == "SE") {
+      p.arc(topLeftX, topLeftY + tileSize, tileSize, tileSize, -p.HALF_PI, 0);
+    } else if (type == "SW") {
+      p.arc(
+        topLeftX + tileSize,
+        topLeftY + tileSize,
+        tileSize,
+        tileSize,
+        p.PI,
+        p.PI + p.HALF_PI
+      );
+    } else if (type == "NS") {
+      p.line(
+        topLeftX + tileSize / 2,
+        topLeftY,
+        topLeftX + tileSize / 2,
+        topLeftY + tileSize
+      );
+    } else if (type == "EW") {
+      p.line(
+        topLeftX,
+        topLeftY + tileSize / 2,
+        topLeftX + tileSize,
+        topLeftY + tileSize / 2
+      );
     }
-    // TODO: specify how to draw all other connections
   }
 }

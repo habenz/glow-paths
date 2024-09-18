@@ -2,15 +2,19 @@
   "name": "glow-paths",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "esbuild src/index.js --bundle --outdir=./public",
-    "start": "esbuild src/index.js --bundle --outdir=./public --serve=9000 --servedir=./public --watch"
+    "start": "esbuild src/index.js --bundle --outdir=./public --serve=9000 --servedir=./public --watch",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "esbuild": "^0.23.1"
+    "esbuild": "^0.23.1",
+    "esbuild-jest": "^0.5.0",
+    "jest": "^29.7.0"
   },
   "dependencies": {
     "p5": "^1.10.0"

@@ -69,13 +69,13 @@ function sketch(p) {
     if (!isConnected) {
       return;
     }
-    if (type == "NE") {
+    if (type == "NW") {
       p.arc(topLeftX, topLeftY, tileSize, tileSize, 0, p.HALF_PI);
-    } else if (type == "NW") {
+    } else if (type == "NE") {
       p.arc(topLeftX + tileSize, topLeftY, tileSize, tileSize, p.HALF_PI, p.PI);
-    } else if (type == "SE") {
-      p.arc(topLeftX, topLeftY + tileSize, tileSize, tileSize, -p.HALF_PI, 0);
     } else if (type == "SW") {
+      p.arc(topLeftX, topLeftY + tileSize, tileSize, tileSize, -p.HALF_PI, 0);
+    } else if (type == "SE") {
       p.arc(
         topLeftX + tileSize,
         topLeftY + tileSize,

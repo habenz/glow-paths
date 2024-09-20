@@ -20,6 +20,7 @@ function sketch(p) {
   p.setup = () => {
     updateSketchSize();
     p.createCanvas(boardSize, boardSize);
+    grid.tryAddRandomLoop();
     drawGrid();
   };
 

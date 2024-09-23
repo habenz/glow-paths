@@ -10,7 +10,7 @@ new p5(sketch, canvasWrapper);
 function sketch(p) {
   let boardSize;
   let tileSize;
-  let grid = new Grid(10);
+  let grid = new Grid(10, drawConnectionOnly);
 
   function updateSketchSize() {
     boardSize = Math.min(p.windowWidth, p.windowHeight) * 0.95;
@@ -20,7 +20,9 @@ function sketch(p) {
   p.setup = () => {
     updateSketchSize();
     p.createCanvas(boardSize, boardSize);
-    grid.tryAddRandomLoop();
+    for (let i = 0; i < 10; i++) {
+      grid.tryAddRandomLoop();
+    }
     drawGrid();
   };
 
@@ -33,7 +35,13 @@ function sketch(p) {
   p.mouseClicked = () => {
     const c = p.floor(p.mouseX / tileSize);
     const r = p.floor(p.mouseY / tileSize);
-    grid.rotateSquare(r, c);
+    if (grid._isOnBoard(r, c)) {
+      grid.rotateSquare(r, c);
+      // FIXIT: don't want this in the final game
+    } else {
+      grid.tryAddRandomLoop();
+    }
+
     drawGrid();
   };
 
@@ -43,6 +51,24 @@ function sketch(p) {
         drawTile(square, r, c);
       });
     });
+    grid.debugPath.forEach(({ r, c, connection }, i) => {
+      drawConnectionOnly(r, c, connection, i);
+    });
+  }
+
+  function drawConnectionOnly(r, c, connection, i) {
+    const x = c * tileSize;
+    const y = r * tileSize;
+
+    p.push();
+    p.strokeWeight(8);
+    p.noFill();
+    p.translate(x + tileSize / 2, y + tileSize / 2);
+    p.rotate(grid.squares[r][c].rotation);
+    p.translate(-(x + tileSize / 2), -(y + tileSize / 2));
+    p.stroke(p.color(255, i * 30, 0, 100));
+    drawConnection(x, y, connection, true);
+    p.pop();
   }
 
   function drawTile(square, row, col) {

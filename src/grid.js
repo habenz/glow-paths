@@ -119,10 +119,11 @@ export default class Grid {
     const [firstStep, stack] = this._getStartSquare();
     // here "length" is actually just a lower bound on the length of the
     // loop we're going to try to produce
-    const length = randomIntInRange(5, 20);
+    // Note: a loop < 4 is not possible
+    const length = randomIntInRange(7, 20);
 
     // first just try to find any random hamiltonian walk of length length
-    const path = [firstStep];
+    let path = [firstStep];
     const visited = new Set([tileStringify(firstStep)]);
 
     while (path.length < length) {
@@ -164,11 +165,92 @@ export default class Grid {
       visited.add(tileStringify(next));
     }
 
+    // FIXIT: remove the debug path
+    this.debugPath = path;
+
+    // then try to find a path back
+    const paths = [];
+    // There's a lot of reasons we might not be able to find a path back,
+    // but it's somewhat common that the reason is the last few connections
+    // on either end curl in onto the rest of the path. So we trim up to 3
+    // steps from either end and see if we can make it back
+    for (let numToRemove = -3; numToRemove < 3; numToRemove++) {
+      const trimmedPath = [...path];
+      const removed = trimmedPath.splice(0, numToRemove);
+
+      const trimmedVisited = new Set(visited);
+      removed.forEach((s) => trimmedVisited.delete(tileStringify(s)));
+
+      trimmedVisited.delete(tileStringify(trimmedPath.at(0)));
+
+      paths.push({
+        path: trimmedPath,
+        visited: trimmedVisited,
+        firstStep: trimmedPath.at(0),
+      });
+    }
+
+    const possibleClosedLoop = this._tryCloseLoop(paths, firstStep);
+    if (possibleClosedLoop) {
+      this.loops.push(possibleClosedLoop);
+      possibleClosedLoop.forEach(({ r, c, connection }) => {
+        this.squares[r][c].connections[connection] = true;
+      });
+    }
+
     // Test code: Make the partial path show up in the drawing of the grid
-    this.loops.push(path);
-    path.forEach(({ r, c, connection }) => {
-      this.squares[r][c].connections[connection] = true;
-    });
+    // this.loops.push(path);
+    // path.forEach(({ r, c, connection }) => {
+    //   this.squares[r][c].connections[connection] = true;
+    // });
+  }
+
+  _tryCloseLoop(paths) {
+    // TODO: is there a better way than just capping the number of iterations?
+    let iter = 0;
+    while (paths.length > 0 && iter < 10000) {
+      // FIXIT: don't include the first step as part of the object in paths
+      const { path: currPath, visited: currVisited, firstStep } = paths.shift();
+      const nextSteps = this.getValidNextSteps(currVisited, currPath.at(-1));
+
+      // if there are no other possible steps then this is a dead end
+      if (nextSteps.length < 1) {
+        // console.log("dead end");
+        continue;
+      }
+      // if the start is in the valid neighbors then we're done
+      if (
+        nextSteps.some(
+          ({ r, c, connection }) =>
+            r == firstStep.r &&
+            c == firstStep.c &&
+            connection == firstStep.connection
+        )
+      ) {
+        // console.log(
+        //   "found a path back!!",
+        //   "path:",
+        //   structuredClone(currPath),
+        //   "nextSteps:",
+        //   structuredClone(nextSteps),
+        //   "firstStep",
+        //   structuredClone(firstStep)
+        // );
+        return currPath;
+      }
+
+      // otherwise consider all possible next steps
+      nextSteps.forEach((step) => {
+        const nextVisited = new Set(currVisited);
+        nextVisited.add(tileStringify(step));
+        paths.push({
+          path: [...currPath, step],
+          visited: nextVisited,
+          firstStep,
+        });
+      });
+      iter++;
+    }
   }
 }
 

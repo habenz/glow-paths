@@ -3,6 +3,7 @@ import "../public/index.css";
 
 import p5 from "p5";
 import Grid from "./grid";
+import { PATH_COLORS, WHITE } from "./colors";
 
 const canvasWrapper = document.getElementById("p5sketch");
 new p5(sketch, canvasWrapper);
@@ -48,53 +49,67 @@ function sketch(p) {
 
   function drawGrid() {
     grid.squares.forEach((row, r) => {
-      row.forEach((square, c) => {
-        drawTile(square, r, c);
+      row.forEach((_, c) => {
+        drawTile(r, c);
       });
     });
-    grid.debugPath.forEach(({ r, c, connection }, i) => {
-      drawConnectionOnly(r, c, connection, i);
+
+    grid.loops.forEach((loop) => {
+      // TODO: 1) picking colors for a loop can probably be its own func
+      //       2) two loops shouldn't be the same colors so keep track of
+      //          used pairs somehow or just generate all combos and pick
+      //          randomly from those. This has the added benefit of being
+      //          able to disqualify low contrast combos easily
+      //        3) should you really be keeping a p5 color on the grid?
+      if (!loop.startColor) {
+        const startColorInd = Math.floor(Math.random() * PATH_COLORS.length);
+        const offset = Math.ceil(Math.random() * (PATH_COLORS.length - 1));
+        const endColorInd = (startColorInd + offset) % PATH_COLORS.length;
+
+        loop.startColor = p.color(...PATH_COLORS[startColorInd].rgb);
+        loop.endColor = p.color(...PATH_COLORS[endColorInd].rgb);
+      }
+      loop.forEach(({ r, c, connection }, i) => {
+        const connectionColor = p.lerpColor(
+          loop.startColor,
+          loop.endColor,
+          i / loop.length
+        );
+        drawConnection(r, c, connection, connectionColor);
+      });
     });
+
+    // grid.debugPath.forEach(({ r, c, connection }, i) => {
+    //   drawConnection(r, c, connection, p.color(255, i * 30, 0, 100));
+    // });
   }
 
-  function drawConnectionOnly(r, c, connection, i) {
+  function drawTile(row, col) {
+    const x = col * tileSize;
+    const y = row * tileSize;
+
+    p.fill(p.color(...WHITE));
+    p.square(x, y, tileSize);
+  }
+
+  function drawConnection(r, c, connection, connectionColor) {
     const x = c * tileSize;
     const y = r * tileSize;
 
     p.push();
     p.strokeWeight(8);
     p.noFill();
+
     p.translate(x + tileSize / 2, y + tileSize / 2);
     p.rotate(grid.squares[r][c].rotation * p.HALF_PI);
     p.translate(-(x + tileSize / 2), -(y + tileSize / 2));
-    p.stroke(p.color(255, i * 30, 0, 100));
-    drawConnection(x, y, connection, true);
+
+    p.stroke(connectionColor);
+    _drawConnection(x, y, connection);
     p.pop();
   }
 
-  function drawTile(square, row, col) {
-    const x = col * tileSize;
-    const y = row * tileSize;
-
-    p.square(x, y, tileSize);
-
-    p.push();
-    p.strokeWeight(4);
-    p.noFill();
-    p.translate(x + tileSize / 2, y + tileSize / 2);
-    p.rotate(square.rotation * p.HALF_PI);
-    p.translate(-(x + tileSize / 2), -(y + tileSize / 2));
-
-    Object.entries(square.connections).forEach(([type, isConnected]) => {
-      drawConnection(x, y, type, isConnected);
-    });
-    p.pop();
-  }
-
-  function drawConnection(topLeftX, topLeftY, type, isConnected) {
-    if (!isConnected) {
-      return;
-    }
+  function _drawConnection(topLeftX, topLeftY, type) {
     if (type == "NW") {
       p.arc(topLeftX, topLeftY, tileSize, tileSize, 0, p.HALF_PI);
     } else if (type == "NE") {

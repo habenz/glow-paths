@@ -10,7 +10,7 @@ new p5(sketch, canvasWrapper);
 function sketch(p) {
   let boardSize;
   let tileSize;
-  let grid = new Grid(10, drawConnectionOnly);
+  let grid = new Grid(10);
 
   function updateSketchSize() {
     boardSize = Math.min(p.windowWidth, p.windowHeight) * 0.95;

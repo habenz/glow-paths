@@ -10,11 +10,12 @@ new p5(sketch, canvasWrapper);
 function sketch(p) {
   let boardSize;
   let tileSize;
-  let grid = new Grid(10);
+  let gridSize = 10;
+  let grid = new Grid(gridSize);
 
   function updateSketchSize() {
     boardSize = Math.min(p.windowWidth, p.windowHeight) * 0.95;
-    tileSize = boardSize / 10;
+    tileSize = boardSize / gridSize;
   }
 
   p.setup = () => {
@@ -72,7 +73,6 @@ function sketch(p) {
   }
 
   function drawTile(square, row, col) {
-    const tileSize = boardSize / 10;
     const x = col * tileSize;
     const y = row * tileSize;
 
@@ -92,7 +92,6 @@ function sketch(p) {
   }
 
   function drawConnection(topLeftX, topLeftY, type, isConnected) {
-    const tileSize = boardSize / 10;
     if (!isConnected) {
       return;
     }

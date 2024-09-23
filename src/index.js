@@ -65,7 +65,7 @@ function sketch(p) {
     p.strokeWeight(8);
     p.noFill();
     p.translate(x + tileSize / 2, y + tileSize / 2);
-    p.rotate(grid.squares[r][c].rotation);
+    p.rotate(grid.squares[r][c].rotation * p.HALF_PI);
     p.translate(-(x + tileSize / 2), -(y + tileSize / 2));
     p.stroke(p.color(255, i * 30, 0, 100));
     drawConnection(x, y, connection, true);
@@ -82,7 +82,7 @@ function sketch(p) {
     p.strokeWeight(4);
     p.noFill();
     p.translate(x + tileSize / 2, y + tileSize / 2);
-    p.rotate(square.rotation);
+    p.rotate(square.rotation * p.HALF_PI);
     p.translate(-(x + tileSize / 2), -(y + tileSize / 2));
 
     Object.entries(square.connections).forEach(([type, isConnected]) => {

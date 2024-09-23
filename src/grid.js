@@ -15,7 +15,7 @@ export default class Grid {
 
   rotateSquare(r, c) {
     const currRotation = this.squares[r][c].rotation;
-    this.squares[r][c].rotation = currRotation + Math.PI / 2;
+    this.squares[r][c].rotation = (currRotation + 1) % 4;
   }
 
   _isOnBoard(r, c) {
@@ -259,6 +259,8 @@ class GridSquare {
     this.connections = {};
     validConnections.forEach((type) => (this.connections[type] = false));
 
+    // an int from 0 to 3 representing the effective number of
+    // 90 deg turns that have happened
     this.rotation = 0;
   }
 }

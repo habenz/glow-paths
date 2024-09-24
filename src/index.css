@@ -9,3 +9,24 @@ body {
   justify-content: center;
   background-color: #fff8e8;
 }
+
+#title {
+  /*align with game board border*/
+  padding: 0 0.5rem;
+  padding-top: calc(min(100vh, 100vw) * 0.025);
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* initially hidden so we can wait for the game to load */
+  display: none;
+}
+
+.side_panel {
+  width: calc((100vw - (min(100vh, 100vw) * 0.95)) * 0.5);
+  align-self: flex-start;
+}
+
+.side_panel_hidden {
+  display: none;
+}

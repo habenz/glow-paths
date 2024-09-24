@@ -35,6 +35,7 @@ function sketch(p) {
     });
 
     drawGrid();
+    updateTitleDisplay();
   };
 
   p.windowResized = () => {
@@ -206,3 +207,19 @@ function sketch(p) {
     }
   }
 }
+
+function updateTitleDisplay() {
+  // TODO: think about the fact that this logic is duplicated here,
+  //  in the css and in the sketch
+  const sketchSize = Math.min(window.innerWidth, window.innerHeight) * 0.95;
+  const remainingWidth = window.innerWidth - sketchSize;
+  const title = document.getElementById("title");
+  if (remainingWidth < 165) {
+    title.style.display = "none";
+  } else {
+    title.style.display = "flex";
+  }
+}
+addEventListener("resize", () => {
+  updateTitleDisplay();
+});

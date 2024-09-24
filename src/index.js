@@ -106,12 +106,23 @@ function sketch(p) {
         loop.startColor = p.color(...PATH_COLORS[startColorInd].rgb);
         loop.endColor = p.color(...PATH_COLORS[endColorInd].rgb);
       }
+
+      const halfwayPoint = Math.floor(loop.length / 2);
       loop.forEach(({ r, c, connection }, i) => {
-        const connectionColor = p.lerpColor(
-          loop.startColor,
-          loop.endColor,
-          i / loop.length
-        );
+        let connectionColor;
+        if (i <= halfwayPoint) {
+          connectionColor = p.lerpColor(
+            loop.startColor,
+            loop.endColor,
+            i / halfwayPoint
+          );
+        } else {
+          connectionColor = p.lerpColor(
+            loop.endColor,
+            loop.startColor,
+            (i - halfwayPoint) / halfwayPoint
+          );
+        }
         drawConnection(r, c, connection, connectionColor);
       });
     });

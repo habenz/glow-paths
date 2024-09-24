@@ -80,8 +80,6 @@ function sketch(p) {
       }
     }
     gameEnded = true;
-    // FIXIT: Need a better way to indicate game done
-    document.body.style.backgroundColor = "green";
   }
 
   function drawGrid() {
@@ -90,6 +88,15 @@ function sketch(p) {
         drawTile(r, c);
       });
     });
+
+    // draw a white border around each loop
+    if (gameEnded) {
+      grid.loops.forEach((loop) => {
+        loop.forEach(({ r, c, connection }, i) => {
+          drawConnection(r, c, connection, p.color("white"), true);
+        });
+      });
+    }
 
     grid.loops.forEach((loop) => {
       // TODO: 1) picking colors for a loop can probably be its own func
@@ -136,24 +143,33 @@ function sketch(p) {
     const x = col * tileSize;
     const y = row * tileSize;
 
+    p.stroke("white");
+    p.strokeWeight(4);
     p.fill(p.color(...WHITE));
     p.square(x, y, tileSize);
   }
 
-  function drawConnection(r, c, connection, connectionColor) {
+  function drawConnection(
+    r,
+    c,
+    connection,
+    connectionColor,
+    isBackground = false
+  ) {
     const x = c * tileSize;
     const y = r * tileSize;
 
     p.push();
-    p.strokeWeight(8);
-    p.noFill();
 
     p.translate(x + tileSize / 2, y + tileSize / 2);
     p.rotate(grid.squares[r][c].rotation * p.HALF_PI);
     p.translate(-(x + tileSize / 2), -(y + tileSize / 2));
 
+    p.noFill();
+    p.strokeWeight(isBackground ? 25 : 8);
     p.stroke(connectionColor);
     _drawConnection(x, y, connection);
+
     p.pop();
   }
 

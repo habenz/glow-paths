@@ -4,6 +4,7 @@ import "../public/index.css";
 import p5 from "p5";
 import Grid from "./grid";
 import { PATH_COLORS, WHITE } from "./colors";
+import { CURVED_CONNECTIONS } from "./connections";
 
 const canvasWrapper = document.getElementById("p5sketch");
 new p5(sketch, canvasWrapper);
@@ -13,6 +14,7 @@ function sketch(p) {
   let tileSize;
   let gridSize = 10;
   let grid = new Grid(gridSize);
+  let gameEnded = false;
 
   function updateSketchSize() {
     boardSize = Math.min(p.windowWidth, p.windowHeight) * 0.95;
@@ -22,9 +24,16 @@ function sketch(p) {
   p.setup = () => {
     updateSketchSize();
     p.createCanvas(boardSize, boardSize);
-    for (let i = 0; i < 10; i++) {
+
+    while (grid.loops.length < 7) {
       grid.tryAddRandomLoop();
     }
+    grid.squares.forEach((row) => {
+      row.forEach((square) => {
+        square.rotation = Math.floor(Math.random() * 4);
+      });
+    });
+
     drawGrid();
   };
 
@@ -35,17 +44,45 @@ function sketch(p) {
   };
 
   p.mouseClicked = () => {
-    const c = p.floor(p.mouseX / tileSize);
-    const r = p.floor(p.mouseY / tileSize);
-    if (grid._isOnBoard(r, c)) {
-      grid.rotateSquare(r, c);
-      // FIXIT: don't want this in the final game
-    } else {
-      grid.tryAddRandomLoop();
+    if (!gameEnded) {
+      const c = p.floor(p.mouseX / tileSize);
+      const r = p.floor(p.mouseY / tileSize);
+      if (grid._isOnBoard(r, c)) {
+        grid.rotateSquare(r, c);
+      }
     }
 
+    checkLevelFinished();
+    console.log(grid.squares.map((row) => row.map((sq) => sq.rotation)));
     drawGrid();
   };
+
+  // TODO: write tests for this
+  function checkLevelFinished() {
+    for (const row of grid.squares) {
+      for (const square of row) {
+        const connections = Object.values(square.connections);
+        // there are no connections through this square so its rotation doesn't matter
+        if (connections.every((conn) => !conn)) {
+          continue;
+        }
+        // if we're only using NS and EW connections then it looks the same when rotated 180 deg
+        const noCurvedConnections = CURVED_CONNECTIONS.map(
+          (conn) => square.connections[conn]
+        ).every((conn) => !conn);
+        if (noCurvedConnections && square.rotation % 2 == 0) {
+          continue;
+        }
+        // we found a square with connections that isn't in the correct orientation
+        if (square.rotation != 0) {
+          return;
+        }
+      }
+    }
+    gameEnded = true;
+    // FIXIT: Need a better way to indicate game done
+    document.body.style.backgroundColor = "green";
+  }
 
   function drawGrid() {
     grid.squares.forEach((row, r) => {

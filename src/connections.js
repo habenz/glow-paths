@@ -7,3 +7,5 @@ export const CONNECTIONS = Object.freeze({
   SW: { name: "SW", connects: [[ 1, 0 ] ,[ 0, -1 ]]},
   SE: { name: "SE", connects: [[ 1, 0] ,[ 0 , 1 ]]},
 });
+
+export const CURVED_CONNECTIONS = ["NW", "NE", "SW", "SE"];

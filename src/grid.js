@@ -119,7 +119,7 @@ export default class Grid {
     const [firstStep, stack] = this._getStartSquare();
     // here "length" is actually just a lower bound on the length of the
     // loop we're going to try to produce
-    // Note: a loop < 4 is not possible
+    // Note: a loop < 4 is not possible but the code will pretend 2 is possible FIXIT
     const length = randomIntInRange(7, 20);
 
     // first just try to find any random hamiltonian walk of length length

@@ -81,6 +81,9 @@ function sketch(p) {
       }
     }
     gameEnded = true;
+    // TODO: should this call out to some other function instead of just doing it here?
+    const title = document.getElementById("title");
+    title.style.textShadow = "#f0bb00 1px 0 5px";
   }
 
   function drawGrid() {

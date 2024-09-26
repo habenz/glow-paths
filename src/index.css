@@ -11,6 +11,12 @@ body {
 }
 
 #title {
+  font-family: "Quicksand", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  user-select: none;
+  color: #3b3d4b;
   /*align with game board border*/
   padding: 0 0.5rem;
   padding-top: calc(min(100vh, 100vw) * 0.025);

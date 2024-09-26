@@ -3,7 +3,7 @@ import "./index.css";
 
 import p5 from "p5";
 import Grid from "./grid";
-import { PATH_COLORS, WHITE } from "./colors";
+import { PATH_COLORS, BACKGROUND_COLOR, GLOW_COLOR } from "./colors";
 import { CURVED_CONNECTIONS } from "./connections";
 
 const canvasWrapper = document.getElementById("p5sketch");
@@ -83,7 +83,7 @@ function sketch(p) {
     gameEnded = true;
     // TODO: should this call out to some other function instead of just doing it here?
     const title = document.getElementById("title");
-    title.style.textShadow = "#f0bb00 1px 0 5px";
+    title.style.textShadow = `${GLOW_COLOR} 1px 0 5px`;
   }
 
   function drawGrid() {
@@ -97,6 +97,7 @@ function sketch(p) {
     if (gameEnded) {
       grid.loops.forEach((loop) => {
         loop.forEach(({ r, c, connection }, i) => {
+          //FIXIT? sneaky secret color
           drawConnection(r, c, connection, p.color("white"), true);
         });
       });
@@ -149,7 +150,7 @@ function sketch(p) {
 
     p.stroke("white");
     p.strokeWeight(4);
-    p.fill(p.color(...WHITE));
+    p.fill(p.color(...BACKGROUND_COLOR));
     p.square(x, y, tileSize);
   }
 

@@ -1,3 +1,8 @@
+:root {
+  --bg-color: #fff8e8;
+  --title-color: #3b3d4b;
+}
+
 * {
   margin: 0;
   box-sizing: border-box;
@@ -7,7 +12,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fff8e8;
+  background-color: var(--bg-color);
 }
 
 #title {
@@ -16,7 +21,7 @@ body {
   font-weight: 700;
   font-style: normal;
   user-select: none;
-  color: #3b3d4b;
+  color: var(--title-color);
   /*align with game board border*/
   padding: 0 0.5rem;
   padding-top: calc(min(100vh, 100vw) * 0.025);

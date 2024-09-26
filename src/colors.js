@@ -7,7 +7,8 @@ export const PATH_COLORS = [
   { name: "PURPLE", rgb: hexToRGB("#6a4c93") },
 ];
 
-export const WHITE = hexToRGB("#fff8e8");
+export const BACKGROUND_COLOR = hexToRGB("#fff8e8");
+export const GLOW_COLOR = "#f0bb00";
 
 function hexToRGB(hexStr) {
   return [

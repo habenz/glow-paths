@@ -93,6 +93,13 @@ function sketch(p) {
       });
     });
 
+    // draw a border around the whole board to account for the
+    // fact that the weights of the tile border strokes add
+    p.stroke("white");
+    p.strokeWeight(6);
+    p.noFill();
+    p.square(0, 0, boardSize);
+
     // draw a white border around each loop
     if (gameEnded) {
       grid.loops.forEach((loop) => {
@@ -149,7 +156,7 @@ function sketch(p) {
     const y = row * tileSize;
 
     p.stroke("white");
-    p.strokeWeight(4);
+    p.strokeWeight(3);
     p.fill(p.color(...BACKGROUND_COLOR));
     p.square(x, y, tileSize);
   }

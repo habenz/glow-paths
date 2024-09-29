@@ -17,10 +17,25 @@ class Modal extends HTMLElement {
     for (const b of buttons) {
       b.addEventListener("click", () => this._toggleVisibility());
     }
+
+    const overlay = this.shadowRoot.querySelector(".overlay");
+    overlay.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this._toggleVisibility();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      const modal = this.shadowRoot.querySelector(".modal");
+      if (e.key == "Escape" && modal.classList.contains("visible")) {
+        this._toggleVisibility();
+      }
+    });
   }
 
   _toggleVisibility() {
-    const modal = this.shadowRoot.querySelector(".wrapper");
+    const overlay = this.shadowRoot.querySelector(".overlay");
+    overlay.classList.toggle("visible");
+    const modal = this.shadowRoot.querySelector(".modal");
     modal.classList.toggle("visible");
   }
 }

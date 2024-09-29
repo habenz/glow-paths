@@ -8,9 +8,10 @@
   border-radius: 2rem;
   margin-top: calc(min(100vh, 100vw) * 0.025);
   margin-left: 1rem;
+  user-select: none;
 }
 
-.wrapper {
+.overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -21,7 +22,7 @@
   display: none;
 }
 
-.wrapper.visible {
+.overlay.visible {
   display: block;
 }
 
@@ -37,12 +38,19 @@
   align-items: center;
   border-radius: 5px;
   font-family: "Quicksand", sans-serif;
+  z-index: 100;
+  display: none;
+}
+
+.modal.visible {
+  display: flex;
 }
 
 button {
   font-family: inherit;
   border: none;
   font-size: larger;
+  user-select: none;
 }
 
 .x_button_container {

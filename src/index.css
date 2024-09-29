@@ -15,6 +15,10 @@ body {
   background-color: var(--bg-color);
 }
 
+#p5sketch {
+  touch-action: manipulation;
+}
+
 #title {
   font-family: "Quicksand", sans-serif;
   font-optical-sizing: auto;

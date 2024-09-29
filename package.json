@@ -4,8 +4,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "esbuild src/index.js --bundle --outdir=./public",
-    "start": "esbuild src/index.js --bundle --outdir=./public --serve=9000 --servedir=./public --watch",
+    "build": "esbuild src/index.js --bundle --outdir=./public --loader:.html=text --loader:.module.css=text",
+    "start": "esbuild src/index.js --bundle --outdir=./public --loader:.html=text --loader:.module.css=text --serve=9000 --servedir=./public --watch",
     "test": "jest"
   },
   "author": "",

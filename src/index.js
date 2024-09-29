@@ -1,5 +1,6 @@
 new EventSource("/esbuild").addEventListener("change", () => location.reload());
 import "./index.css";
+import "./instructions/instructions.js";
 
 import p5 from "p5";
 import Grid from "./grid";

@@ -45,24 +45,17 @@ function sketch(p) {
     drawGrid();
   };
 
-  p.mouseClicked = () => {
-    if (!gameEnded) {
-      const c = p.floor(p.mouseX / tileSize);
-      const r = p.floor(p.mouseY / tileSize);
-      if (grid._isOnBoard(r, c)) {
-        grid.rotateSquare(r, c);
-      }
-    }
+  // mouseClicked and touchStarted defined so interactions
+  // work on both desktop and mobile
+  p.mouseClicked = () => interactWithTileAt(p.mouseX, p.mouseY);
 
-    checkLevelFinished();
-    console.log(grid.squares.map((row) => row.map((sq) => sq.rotation)));
-    drawGrid();
+  p.touchStarted = () => {
+    const { x, y } = p.touches.at(-1);
+    interactWithTileAt(x, y);
   };
 
-  // FIXIT: logic duplicated
-  p.touchStarted = () => {
+  function interactWithTileAt(x, y) {
     if (!gameEnded) {
-      const { x, y } = p.touches.at(-1);
       const c = p.floor(x / tileSize);
       const r = p.floor(y / tileSize);
       if (grid._isOnBoard(r, c)) {
@@ -73,7 +66,7 @@ function sketch(p) {
     checkLevelFinished();
     console.log(grid.squares.map((row) => row.map((sq) => sq.rotation)));
     drawGrid();
-  };
+  }
 
   // TODO: write tests for this
   function checkLevelFinished() {

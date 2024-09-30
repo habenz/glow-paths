@@ -49,11 +49,11 @@ function sketch(p) {
     drawGrid();
   };
 
-  // mouseClicked and touchStarted defined so interactions
+  // mouseClicked and touchEnded defined so interactions
   // work on both desktop and mobile
   p.mouseClicked = () => interactWithTileAt(p.mouseX, p.mouseY);
 
-  p.touchStarted = () => {
+  p.touchEnded = () => {
     const { x, y } = p.touches.at(-1);
     interactWithTileAt(x, y);
   };

@@ -59,6 +59,22 @@ function sketch(p) {
     drawGrid();
   };
 
+  // FIXIT: logic duplicated
+  p.touchStarted = () => {
+    if (!gameEnded) {
+      const { x, y } = p.touches.at(-1);
+      const c = p.floor(x / tileSize);
+      const r = p.floor(y / tileSize);
+      if (grid._isOnBoard(r, c)) {
+        grid.rotateSquare(r, c);
+      }
+    }
+
+    checkLevelFinished();
+    console.log(grid.squares.map((row) => row.map((sq) => sq.rotation)));
+    drawGrid();
+  };
+
   // TODO: write tests for this
   function checkLevelFinished() {
     for (const row of grid.squares) {

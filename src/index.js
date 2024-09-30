@@ -8,6 +8,10 @@ import { PATH_COLORS, BACKGROUND_COLOR, GLOW_COLOR } from "./colors";
 import { CURVED_CONNECTIONS } from "./connections";
 
 const canvasWrapper = document.getElementById("p5sketch");
+// Mark the element that contains the sketch as clickable so Safari on iOS will
+// respect touch-action: manipulation and disable double tap to zoom as per
+// https://bugs.webkit.org/show_bug.cgi?id=149854#c25
+canvasWrapper.onclick = () => {};
 new p5(sketch, canvasWrapper);
 
 function sketch(p) {
@@ -45,10 +49,19 @@ function sketch(p) {
     drawGrid();
   };
 
-  p.mouseClicked = () => {
+  // mouseClicked and touchEnded defined so interactions
+  // work on both desktop and mobile
+  p.mouseClicked = () => interactWithTileAt(p.mouseX, p.mouseY);
+
+  p.touchEnded = () => {
+    const { x, y } = p.touches.at(-1);
+    interactWithTileAt(x, y);
+  };
+
+  function interactWithTileAt(x, y) {
     if (!gameEnded) {
-      const c = p.floor(p.mouseX / tileSize);
-      const r = p.floor(p.mouseY / tileSize);
+      const c = p.floor(x / tileSize);
+      const r = p.floor(y / tileSize);
       if (grid._isOnBoard(r, c)) {
         grid.rotateSquare(r, c);
       }
@@ -57,7 +70,7 @@ function sketch(p) {
     checkLevelFinished();
     console.log(grid.squares.map((row) => row.map((sq) => sq.rotation)));
     drawGrid();
-  };
+  }
 
   // TODO: write tests for this
   function checkLevelFinished() {

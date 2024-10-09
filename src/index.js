@@ -5,7 +5,6 @@ import "./instructions/instructions.js";
 import p5 from "p5";
 import Grid from "./grid";
 import { PATH_COLORS, BACKGROUND_COLOR, GLOW_COLOR } from "./colors";
-import { CURVED_CONNECTIONS } from "./connections";
 
 const canvasWrapper = document.getElementById("p5sketch");
 // Mark the element that contains the sketch as clickable so Safari on iOS will

@@ -1,4 +1,4 @@
-import { CONNECTIONS } from "./connections";
+import { CONNECTIONS, CURVED_CONNECTIONS } from "./connections";
 import { randomElement, randomIntInRange, tileStringify } from "./utils";
 
 export default class Grid {
@@ -262,5 +262,17 @@ class GridSquare {
     // an int from 0 to 3 representing the effective number of
     // 90 deg turns that have happened
     this.rotation = 0;
+  }
+
+  isEmpty() {
+    const connectionValues = Object.values(this.connections);
+    return connectionValues.every((conn) => !conn);
+  }
+
+  isHalfTurnSymmetric() {
+    // No curved connections => it's half turn symmetric
+    return CURVED_CONNECTIONS.map((conn) => this.connections[conn]).every(
+      (conn) => !conn
+    );
   }
 }

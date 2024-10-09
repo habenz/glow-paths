@@ -33,11 +33,14 @@ function sketch(p) {
     while (grid.loops.length < 7) {
       grid.tryAddRandomLoop();
     }
-    grid.squares.forEach((row) => {
-      row.forEach((square) => {
-        square.rotation = Math.floor(Math.random() * 4);
-      });
-    });
+    for (const row of grid.squares) {
+      for (const square of row) {
+        // only scramble squares with connections through them (dev convenience)
+        if (!square.isEmpty()) {
+          square.rotation = Math.floor(Math.random() * 4);
+        }
+      }
+    }
 
     drawGrid();
     updateTitleDisplay();
@@ -75,16 +78,11 @@ function sketch(p) {
   function checkLevelFinished() {
     for (const row of grid.squares) {
       for (const square of row) {
-        const connections = Object.values(square.connections);
         // there are no connections through this square so its rotation doesn't matter
-        if (connections.every((conn) => !conn)) {
+        if (square.isEmpty()) {
           continue;
         }
-        // if we're only using NS and EW connections then it looks the same when rotated 180 deg
-        const noCurvedConnections = CURVED_CONNECTIONS.map(
-          (conn) => square.connections[conn]
-        ).every((conn) => !conn);
-        if (noCurvedConnections && square.rotation % 2 == 0) {
+        if (square.isHalfTurnSymmetric() && square.rotation % 2 == 0) {
           continue;
         }
         // we found a square with connections that isn't in the correct orientation

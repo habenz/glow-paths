@@ -65,11 +65,9 @@ function sketch(p) {
       if (grid._isOnBoard(r, c)) {
         grid.rotateSquare(r, c);
       }
-    }
-
     checkLevelFinished();
     console.log(grid.squares.map((row) => row.map((sq) => sq.rotation)));
-    drawGrid();
+    }
   }
 
   // TODO: write tests for this

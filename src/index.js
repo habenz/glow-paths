@@ -43,10 +43,11 @@ function sketch(p) {
     updateTitleDisplay();
   };
 
+  p.draw = () => drawGrid();
+
   p.windowResized = () => {
     updateSketchSize();
     p.resizeCanvas(boardSize, boardSize);
-    drawGrid();
   };
 
   // mouseClicked and touchEnded defined so interactions
@@ -65,8 +66,8 @@ function sketch(p) {
       if (grid._isOnBoard(r, c)) {
         grid.rotateSquare(r, c);
       }
-    checkLevelFinished();
-    console.log(grid.squares.map((row) => row.map((sq) => sq.rotation)));
+      checkLevelFinished();
+      console.log(grid.squares.map((row) => row.map((sq) => sq.rotation)));
     }
   }
 
@@ -92,7 +93,7 @@ function sketch(p) {
         }
       }
     }
-    gameEnded = true;
+    gameEnded = p.millis();
     // TODO: should this call out to some other function instead of just doing it here?
     const title = document.getElementById("title");
     title.style.textShadow = `${GLOW_COLOR} 1px 0 5px`;
@@ -111,16 +112,6 @@ function sketch(p) {
     p.strokeWeight(6);
     p.noFill();
     p.square(0, 0, boardSize);
-
-    // draw a white border around each loop
-    if (gameEnded) {
-      grid.loops.forEach((loop) => {
-        loop.forEach(({ r, c, connection }, i) => {
-          //FIXIT? sneaky secret color
-          drawConnection(r, c, connection, p.color("white"), true);
-        });
-      });
-    }
 
     grid.loops.forEach((loop) => {
       // TODO: 1) picking colors for a loop can probably be its own func
@@ -173,13 +164,7 @@ function sketch(p) {
     p.square(x, y, tileSize);
   }
 
-  function drawConnection(
-    r,
-    c,
-    connection,
-    connectionColor,
-    isBackground = false
-  ) {
+  function drawConnection(r, c, connection, connectionColor) {
     const x = c * tileSize;
     const y = r * tileSize;
 
@@ -189,12 +174,29 @@ function sketch(p) {
     p.rotate(grid.squares[r][c].rotation * p.HALF_PI);
     p.translate(-(x + tileSize / 2), -(y + tileSize / 2));
 
+    if (gameEnded) {
+      p.drawingContext.shadowBlur = getGlowSize();
+      p.drawingContext.shadowColor = connectionColor;
+    }
+
     p.noFill();
-    p.strokeWeight(isBackground ? 25 : 8);
+    p.strokeWeight(8);
     p.stroke(connectionColor);
     _drawConnection(x, y, connection);
 
     p.pop();
+  }
+
+  function getGlowSize() {
+    const maxGlow = 35;
+    const finalGlow = 15;
+    // Fade in glow for 1.5s, then fade out in 0.5 sec
+    if (p.millis() - gameEnded < 1500) {
+      return p.lerp(0, maxGlow, (p.millis() - gameEnded) / 1500);
+    } else if (p.millis() - gameEnded < 2000) {
+      return p.lerp(maxGlow, finalGlow, (p.millis() - gameEnded - 1500) / 500);
+    }
+    return finalGlow;
   }
 
   function _drawConnection(topLeftX, topLeftY, type) {

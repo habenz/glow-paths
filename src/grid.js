@@ -13,6 +13,7 @@ export default class Grid {
     this.loops = [];
   }
 
+  // FIXIT: make this a method on square instead
   rotateSquare(r, c) {
     const currRotation = this.squares[r][c].rotation;
     this.squares[r][c].rotation = (currRotation + 1) % 4;
@@ -269,10 +270,21 @@ class GridSquare {
     return connectionValues.every((conn) => !conn);
   }
 
-  isHalfTurnSymmetric() {
+  _isHalfTurnSymmetric() {
     // No curved connections => it's half turn symmetric
     return CURVED_CONNECTIONS.map((conn) => this.connections[conn]).every(
       (conn) => !conn
     );
+  }
+
+  isCorrectlyOriented() {
+    // if there are no connections through this square, its rotation doesn't matter
+    if (this.isEmpty()) {
+      return true;
+    } else if (this._isHalfTurnSymmetric()) {
+      return this.rotation % 2 == 0;
+    } else {
+      return this.rotation % 4 == 0;
+    }
   }
 }

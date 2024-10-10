@@ -13,12 +13,39 @@ const canvasWrapper = document.getElementById("p5sketch");
 canvasWrapper.onclick = () => {};
 new p5(sketch, canvasWrapper);
 
+let gridSize = 10;
+let grid = new Grid(gridSize);
+let gameEnded = false;
+let hint = null;
+const hintLength = 1400;
+
+const hintButton = document.createElement("button");
+hintButton.innerText = "Hint";
+hintButton.onclick = () => {
+  // pick a random square that still needs to be rotated
+  const hintCandidates = [];
+  for (let r = 0; r < grid.squares.length; r++) {
+    for (let c = 0; c < grid.squares[r].length; c++) {
+      const square = grid.squares[r][c];
+      if (!square.isCorrectlyOriented()) {
+        hintCandidates.push({ r, c });
+      }
+    }
+  }
+  const randIndex = Math.floor(hintCandidates.length * Math.random());
+  hint = hintCandidates[randIndex];
+  // disable the button so more than one hint is never shown at the same time
+  hintButton.disabled = true;
+  setTimeout(() => {
+    hint = null;
+    hintButton.disabled = false;
+  }, hintLength);
+};
+document.querySelector(".side_panel").append(hintButton);
+
 function sketch(p) {
   let boardSize;
   let tileSize;
-  let gridSize = 10;
-  let grid = new Grid(gridSize);
-  let gameEnded = false;
 
   function updateSketchSize() {
     boardSize = Math.min(p.windowWidth, p.windowHeight) * 0.95;
@@ -77,15 +104,7 @@ function sketch(p) {
   function checkLevelFinished() {
     for (const row of grid.squares) {
       for (const square of row) {
-        // there are no connections through this square so its rotation doesn't matter
-        if (square.isEmpty()) {
-          continue;
-        }
-        if (square.isHalfTurnSymmetric() && square.rotation % 2 == 0) {
-          continue;
-        }
-        // we found a square with connections that isn't in the correct orientation
-        if (square.rotation != 0) {
+        if (!square.isCorrectlyOriented()) {
           return;
         }
       }
@@ -109,6 +128,8 @@ function sketch(p) {
     p.strokeWeight(6);
     p.noFill();
     p.square(0, 0, boardSize);
+
+    drawHint();
 
     grid.loops.forEach((loop) => {
       // TODO: 1) picking colors for a loop can probably be its own func
@@ -151,14 +172,47 @@ function sketch(p) {
     // });
   }
 
+  function drawHint() {
+    if (!hint) {
+      return;
+    }
+    if (!hint.startTime) {
+      hint.startTime = p.millis();
+    }
+
+    const x = hint.c * tileSize;
+    const y = hint.r * tileSize;
+
+    p.push();
+
+    const lightest = p.color(255);
+    const darkest = p.color(GLOW_COLOR);
+    const currentColor = p.lerpColor(
+      lightest,
+      darkest,
+      (p.sin((p.millis() - hint.startTime) / 200) + 1) / 2
+    );
+
+    p.drawingContext.shadowColor = currentColor;
+    p.stroke(currentColor);
+
+    p.drawingContext.shadowBlur = 4;
+    p.strokeWeight(2);
+    p.noFill();
+    p.square(x, y, tileSize);
+    p.pop();
+  }
+
   function drawTile(row, col) {
     const x = col * tileSize;
     const y = row * tileSize;
 
+    p.push();
     p.stroke("white");
     p.strokeWeight(3);
     p.fill(p.color(...BACKGROUND_COLOR));
     p.square(x, y, tileSize);
+    p.pop();
   }
 
   function drawConnection(r, c, connection, connectionColor) {

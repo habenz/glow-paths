@@ -1,13 +1,11 @@
 .trigger {
   background: none;
   font-family: "Quicksand", sans-serif;
-  font-size: x-large;
+  font-size: medium;
   color: #fff8e8;
   background-color: #3b3d4b;
   padding: 0.25rem 0.75rem;
   border-radius: 2rem;
-  margin-top: calc(min(100vh, 100vw) * 0.025);
-  margin-left: 1rem;
   user-select: none;
 }
 

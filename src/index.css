@@ -1,6 +1,6 @@
 :root {
   --bg-color: #fff8e8;
-  --title-color: #3b3d4b;
+  --text-color: #3b3d4b;
 }
 
 * {
@@ -10,8 +10,8 @@
 
 body {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   background-color: var(--bg-color);
 }
 
@@ -25,23 +25,37 @@ body {
   font-weight: 700;
   font-style: normal;
   user-select: none;
-  color: var(--title-color);
-  /*align with game board border*/
-  padding: 0 0.5rem;
-  padding-top: calc(min(100vh, 100vw) * 0.025);
+  color: var(--text-color);
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
   justify-content: center;
-  /* initially hidden so we can wait for the game to load */
-  display: none;
+  margin: 0.5rem 0;
 }
 
-.side_panel {
-  width: calc((100vw - (min(100vh, 100vw) * 0.95)) * 0.5);
-  align-self: flex-start;
+#game-controls {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-.side_panel_hidden {
-  display: none;
+#hint-button {
+  font-family: "Quicksand", sans-serif;
+  font-size: x-large;
+  color: var(--bg-color);
+  background-color: var(--text-color);
+  padding: 0.25rem 1rem 0.25rem 0.5rem;
+  border-radius: 2rem;
+  border: none;
+  user-select: none;
+  width: fit-content;
+}
+
+#hint-button:hover {
+  background: #9d9b9a;
+}
+
+#hint-button:disabled {
+  background: #9d9b9a;
 }

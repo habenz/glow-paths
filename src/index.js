@@ -20,7 +20,8 @@ let hint = null;
 const hintLength = 1400;
 
 const hintButton = document.createElement("button");
-hintButton.innerText = "Hint";
+hintButton.id = "hint-button";
+hintButton.innerText = "💡 Hint";
 hintButton.onclick = () => {
   // pick a random square that still needs to be rotated
   const hintCandidates = [];
@@ -44,14 +45,14 @@ hintButton.onclick = () => {
 const disableHint = () => {
   hintButton.disabled = true;
 };
-document.querySelector(".side_panel").append(hintButton);
+document.getElementById("game-controls").prepend(hintButton);
 
 function sketch(p) {
   let boardSize;
   let tileSize;
 
   function updateSketchSize() {
-    boardSize = Math.min(p.windowWidth, p.windowHeight) * 0.95;
+    boardSize = Math.min(p.windowWidth, p.windowHeight) * 0.75;
     tileSize = boardSize / gridSize;
   }
 
@@ -59,7 +60,7 @@ function sketch(p) {
     updateSketchSize();
     p.createCanvas(boardSize, boardSize);
 
-    while (grid.loops.length < 7) {
+    while (grid.loops.length < 1) {
       grid.tryAddRandomLoop();
     }
     for (const row of grid.squares) {
@@ -72,7 +73,6 @@ function sketch(p) {
     }
 
     drawGrid();
-    updateTitleDisplay();
   };
 
   p.draw = () => drawGrid();
@@ -287,19 +287,3 @@ function sketch(p) {
     }
   }
 }
-
-function updateTitleDisplay() {
-  // TODO: think about the fact that this logic is duplicated here,
-  //  in the css and in the sketch
-  const sketchSize = Math.min(window.innerWidth, window.innerHeight) * 0.95;
-  const remainingWidth = window.innerWidth - sketchSize;
-  const title = document.getElementById("title");
-  if (remainingWidth < 165) {
-    title.style.display = "none";
-  } else {
-    title.style.display = "flex";
-  }
-}
-addEventListener("resize", () => {
-  updateTitleDisplay();
-});

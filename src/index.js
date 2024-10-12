@@ -11,6 +11,10 @@ const canvasWrapper = document.getElementById("p5sketch");
 // respect touch-action: manipulation and disable double tap to zoom as per
 // https://bugs.webkit.org/show_bug.cgi?id=149854#c25
 canvasWrapper.onclick = () => {};
+// Mark the element that contains the sketch as clickable so Safari on iOS will
+// respect touch-action: manipulation and disable double tap to zoom as per
+// https://bugs.webkit.org/show_bug.cgi?id=149854#c25
+canvasWrapper.onclick = () => {};
 new p5(sketch, canvasWrapper);
 
 let gridSize = 10;

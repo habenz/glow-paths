@@ -41,6 +41,9 @@ hintButton.onclick = () => {
     hintButton.disabled = false;
   }, hintLength);
 };
+const disableHint = () => {
+  hintButton.disabled = true;
+};
 document.querySelector(".side_panel").append(hintButton);
 
 function sketch(p) {
@@ -110,6 +113,7 @@ function sketch(p) {
       }
     }
     gameEnded = p.millis();
+    disableHint();
     // TODO: should this call out to some other function instead of just doing it here?
     const title = document.getElementById("title");
     title.style.textShadow = `${GLOW_COLOR} 1px 0 5px`;

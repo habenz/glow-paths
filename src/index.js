@@ -60,7 +60,7 @@ function sketch(p) {
     updateSketchSize();
     p.createCanvas(boardSize, boardSize);
 
-    while (grid.loops.length < 1) {
+    while (grid.loops.length < 7) {
       grid.tryAddRandomLoop();
     }
     for (const row of grid.squares) {

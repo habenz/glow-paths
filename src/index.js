@@ -22,6 +22,7 @@ let grid = new Grid(gridSize);
 let gameEnded = false;
 let hint = null;
 const hintLength = 1400;
+let mostRecentTouch = -1;
 
 const hintButton = document.createElement("button");
 hintButton.id = "hint-button";
@@ -97,8 +98,11 @@ function sketch(p) {
   p.mouseClicked = () => interactWithTileAt(p.mouseX, p.mouseY);
 
   p.touchEnded = () => {
-    const { x, y } = p.touches.at(-1);
-    interactWithTileAt(x, y);
+    if (p.touches.length > mostRecentTouch + 1) {
+      mostRecentTouch = p.touches.length - 1;
+      const { x, y } = p.touches[mostRecentTouch];
+      interactWithTileAt(x, y);
+    }
   };
 
   function interactWithTileAt(x, y) {
@@ -107,9 +111,9 @@ function sketch(p) {
       const r = p.floor(y / tileSize);
       if (grid._isOnBoard(r, c)) {
         grid.rotateSquare(r, c);
+        checkLevelFinished();
+        console.log(grid.squares.map((row) => row.map((sq) => sq.rotation)));
       }
-      checkLevelFinished();
-      console.log(grid.squares.map((row) => row.map((sq) => sq.rotation)));
     }
   }
 

@@ -1,6 +1,8 @@
 :root {
   --bg-color: #fff8e8;
   --text-color: #3b3d4b;
+  --light-gray: #9d9b9a;
+  --glow-color: #f0bb00;
 }
 
 * {
@@ -32,6 +34,11 @@ body {
   gap: 0.5rem;
   justify-content: center;
   margin: 0.5rem 0;
+  transition: text-shadow 1s ease-out;
+}
+
+.title-glow {
+  text-shadow: var(--glow-color) 1px 0 5px;
 }
 
 #game-controls {
@@ -55,9 +62,9 @@ body {
 }
 
 #hint-button:hover {
-  background: #9d9b9a;
+  background: var(--light-gray);
 }
 
 #hint-button:disabled {
-  background: #9d9b9a;
+  background: var(--light-gray);
 }

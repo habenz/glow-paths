@@ -126,7 +126,7 @@ function sketch(p) {
     disableHint();
     // TODO: should this call out to some other function instead of just doing it here?
     const title = document.getElementById("title");
-    title.style.textShadow = `${GLOW_COLOR} 1px 0 5px`;
+    title.classList.add("title-glow");
   }
 
   function drawGrid() {

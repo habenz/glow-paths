@@ -13,6 +13,8 @@ body {
   flex-direction: column;
   align-items: center;
   background-color: var(--bg-color);
+  height: 100%;
+  justify-content: space-evenly;
 }
 
 #p5sketch {

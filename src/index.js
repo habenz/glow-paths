@@ -54,10 +54,16 @@ document.getElementById("game-controls").prepend(hintButton);
 function sketch(p) {
   let boardSize;
   let tileSize;
+  let connectionStrokeWidth;
 
   function updateSketchSize() {
-    boardSize = Math.min(p.windowWidth, p.windowHeight) * 0.75;
+    const minWindowDimensions = Math.min(p.windowWidth, p.windowHeight);
+    boardSize = minWindowDimensions * 0.75;
     tileSize = boardSize / gridSize;
+    // 320 to 600 px is the range of mobile devices we want
+    // to scale the stroke of the connections for
+    const sizeToDomain = p.constrain(minWindowDimensions, 320, 600);
+    connectionStrokeWidth = p.lerp(3, 8, (sizeToDomain - 320) / (600 - 320));
   }
 
   p.setup = () => {
@@ -239,7 +245,7 @@ function sketch(p) {
     }
 
     p.noFill();
-    p.strokeWeight(8);
+    p.strokeWeight(connectionStrokeWidth);
     p.stroke(connectionColor);
     _drawConnection(x, y, connection);
 
@@ -247,8 +253,8 @@ function sketch(p) {
   }
 
   function getGlowSize() {
-    const maxGlow = 35;
-    const finalGlow = 15;
+    const maxGlow = 4.5 * connectionStrokeWidth;
+    const finalGlow = 2 * connectionStrokeWidth;
     // Fade in glow for 1.5s, then fade out in 0.5 sec
     if (p.millis() - gameEnded < 1500) {
       return p.lerp(0, maxGlow, (p.millis() - gameEnded) / 1500);
